@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Iris Flower Classification | ML Project</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: #f4f6fb;
+            color: #333;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            max-width: 800px;
+            margin: auto;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* IMAGE SECTION */
+        .image-section {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 40px 20px;
+            flex-wrap: wrap;
+        }
+
+        .image-section img {
+            width: 1000px;
+            border-radius: 12px;
+            box-shadow: 0px 10px 25px rgba(0,0,0,0.15);
+        }
+
+        /* FORM CARD */
+        .card {
+            background: white;
+            width: 450px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .card h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0 14px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        /* RESULT SECTION */
+        .result {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .result img {
+            width: 200px;
+            margin-top: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 13px;
+            color: #777;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- HERO -->
+<div class="hero">
+    <h1>Iris Flower Classification 🌸</h1>
+    <p>
+        This project is an end-to-end Machine Learning web application that predicts
+        the species of an Iris flower using four physical measurements.
+        The model is trained using supervised learning techniques and deployed
+        using Flask to provide real-time predictions through a user-friendly interface.
+    </p>
+</div>
+
+<!-- IMAGE GALLERY -->
+<div class="image-section">
+    <!-- <img src="{{ url_for('static', filename='images/iris1.jpg') }}"> -->
+    <!-- <img src="{{ url_for('static', filename='images/iris2.jpg') }}"> -->
+    <!-- <img src="{{ url_for('static', filename='images/iris3.jpg') }}"> -->
+    <img src="{{ url_for('static', filename='images/image.png') }}">
+
+</div>
+
+<!-- FORM -->
+<div class="card">
+    <h2>Predict Flower Species</h2>
+
+    <!-- <form action="/predict" method="post"> -->
+        <form id="predictForm">
+
+        <label>Sepal Length (cm)</label>
+        <input type="number" step="any" name="sepal_length" value="5.1" required>
+
+        <label>Sepal Width (cm)</label>
+        <input type="number" step="any" name="sepal_width" value="3.5" required>
+
+        <label>Petal Length (cm)</label>
+        <input type="number" step="any" name="petal_length" value="1.4" required>
+
+        <label>Petal Width (cm)</label>
+        <input type="number" step="any" name="petal_width" value="0.2" required>
+
+        <button type="submit">Predict Flower</button>
+    </form>
+
+    <!-- DEFAULT OUTPUT (shown on first load) -->
+    <!-- {% if prediction_text %}
+    <div class="result">
+        <h3>{{ prediction_text }}</h3>
+        <img src="{{ url_for('static', filename='images/' + flower_image) }}">
+    </div>
+    {% else %}
+    <div class="result">
+        <h3>Predicted Flower: Setosa</h3>
+        <img src="{{ url_for('static', filename='images/setosa.jpg') }}">
+    </div>
+    {% endif %} -->
+    <div class="result" id="result">
+    <h3>Predicted Flower: Setosa</h3>
+    <img src="{{ url_for('static', filename='images/setosa.png') }}">
+</div>
+
+</div>
+
+
+<div class="footer">
+    Built with Flask & Scikit-learn | AI/ML Deployment Project
+</div>
+</body>
+<script>
+document.getElementById("predictForm").addEventListener("submit", function (e) {
+    e.preventDefault(); // 🚫 stop page reload
+
+    const formData = new FormData(this);
+
+    fetch("/predict", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("result").innerHTML = `
+            <h3>Predicted Flower: ${data.flower}</h3>
+            <img src="/static/images/${data.image}" style="width:200px;border-radius:10px;">
+        `;
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+});
+</script>
+
+</html>
